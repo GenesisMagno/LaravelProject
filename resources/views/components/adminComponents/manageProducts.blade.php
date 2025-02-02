@@ -24,7 +24,7 @@
 
             @foreach ($products as $product)
                 <tr class="bg-white text-sm">
-                <td class="p-3">{{$product->name}}</td>
+                <td class="p-4">{{$product->name}}</td>
                 <td>
                     <img class="h-10 w-10 inline" src="{{asset('storage/' . $product->image)}}" alt="hello">
                 </td>
@@ -32,16 +32,16 @@
                 <td>{{$product->medium}}</td>
                 <td>{{$product->platter}}</td>
                 <td>{{$product->tub}}</td>
-                <td class="flex justify-center text-center items-center">
-                    
-                    <a href="{{route('products.edit',$product->id)}}"><button class="mr-2 bg-gray-100 text-green-700 h-8 w-20"><i class='fas fa-edit '></i>Edit</button></a>
+                <td>
+                    <div class="flex justify-center text-center items-center m-auto">
+                        <a href="{{route('products.edit',$product->id)}}"><button class="mr-2 bg-gray-100 text-green-700 h-8 w-20"><i class='fas fa-edit '></i>Edit</button></a>
                     
                     <form action="{{route('products.destroy', $product->id)}}" Method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="bg-gray-100 text-red-600 h-8 w-20"><i class='fa fa-trash'></i>Delete</button>
                     </form>
-                    
+                    </div>  
                 </td>
                 </tr>
             @endforeach

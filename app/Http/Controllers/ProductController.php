@@ -35,17 +35,17 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name'=>'required',
             'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'big'=>['nullable','max:6'],
-            'medium'=>['nullable','max:6'],
-            'platter'=>['nullable','max:6'],
-            'tub'=>['nullable','max:6'],
+            'big' => ['nullable', 'numeric', 'max:999999'], 
+            'medium' => ['nullable', 'numeric', 'max:999999'],
+            'platter' => ['nullable', 'numeric', 'max:999999'],
+            'tub' => ['nullable', 'numeric', 'max:999999']
         ]);
   
         $validated['image']= $request->file('image')->store('images' , 'public');
 
         Product::create($validated);
 
-        return to_route('products.index');
+        return to_route('admin');
 
     }
 
@@ -73,18 +73,21 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'name'=>'required',
-            'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'big'=>['nullable','max:6'],
-            'medium'=>['nullable','max:6'],
-            'platter'=>['nullable','max:6'],
-            'tub'=>['nullable','max:6']
+            'name' => 'required',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'big' => ['nullable', 'numeric', 'max:999999'], 
+            'medium' => ['nullable', 'numeric', 'max:999999'],
+            'platter' => ['nullable', 'numeric', 'max:999999'],
+            'tub' => ['nullable', 'numeric', 'max:999999']
         ]);
-        Product::destroyImage($product->image);
-        $validated['image']= $request->file('image')->store('images' , 'public');
+        if($request->hasFile('image')){
+            Product::destroyImage($product->image);
+            $validated['image']= $request->file('image')->store('images' , 'public');
+        }else{
+            $validated['image']= $product->image;
+        }
         $product->update($validated);
-
-        return to_route('products.index');
+        return to_route('admin');
     }
 
     /**
@@ -94,7 +97,7 @@ class ProductController extends Controller
     {
         Product::destroyImage($product->image);
         $product->delete();
-        return to_route('products.index');
+        return to_route('admin');
 
     }
     public function search(Request $request)
@@ -108,13 +111,12 @@ class ProductController extends Controller
                                 ->orWhere('medium','like','%' . $query . '%')
                                 ->orWhere('platter','like','%' . $query . '%')
                                 ->orWhere('tub','like','%' . $query . '%')
-                               
                                ->get();
         } else {
             // If no query is provided, return all products
             $products = Product::all();
         }
 
-        return view('admin.admin', ['products'=>$products]);
+        return to_route('admin');
     }
 }

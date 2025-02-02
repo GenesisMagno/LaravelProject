@@ -12,17 +12,22 @@ Route::get('/', function(){
     return view('auth.authLogin');
 });
 
-Route::resource('/products', ProductController::class)->except(['create','store','edit','update','destroy','search']);
-
 Route::middleware([AdminMiddleware::class])->get('/admin', [AdminController::class, 'manageProducts'])->name('admin');
 
-Route::middleware('auth')->group(function (){
-    Route::resource('/products', ProductController::class)->except(['index', 'show']);
+// Public access to index and show
+Route::resource('/products', ProductController::class); 
+
+// Authenticated routes
+Route::middleware('auth')->group(function () {
+    // This will enable `create`, `store`, `edit`, `update`, `destroy` for authenticated users
+    
     Route::get('/products.search', [ProductController::class, 'search'])->name('searchProducts');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware('guest')->group(function (){
+    Route::get('login/google', [AuthController::class, 'redirectToGoogle'])->name('login.google');
+    Route::get('login/google/callback', [AuthController::class, 'handleGoogleCallback']);
     Route::get('/signup', [AuthController::class, 'signupForm'])->name('signup');
     Route::post('/signup', [AuthController::class, 'signup'])->name('signup.store');
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');

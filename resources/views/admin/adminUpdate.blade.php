@@ -20,6 +20,7 @@
                                     id="file-upload" 
                                     name="image" 
                                     class="mt-3 text-sm text-gray-900 border rounded-lg cursor-pointer dark:bg-gray-100  dark:placeholder-gray-400"
+                                    value="{{ $product->image }}"
                                     onchange="previewFile()"
                                 />
                             
@@ -31,21 +32,21 @@
                         <div id="input-Container" class="w-[35%] h-full pt-8 block">
                             <div class="mb-4  flex flex-col">
                                 <label class="text-2xl">Product Name</label>
-                                <input type="text" name="name" id="name" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="{{$product->name}}">
+                                <input type="text" name="name" id="name" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" value="{{$product->name}}">
                                 @error('name')
                                 <span>errorname</span>
                                 @enderror
                             </div>
                             <div class="mb-4 flex flex-col">
                                 <label class="text-2xl">Big Price</label>
-                                <input type="text" name="big" id="big" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱{{$product->big}}">
+                                <input type="text" name="big" id="big" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱-{{$product->big}}">
                                 @error('big')
                                 <span>errorbig</span>
                                 @enderror
                             </div>
                             <div class="mb-4 flex flex-col">
                                 <label class="text-2xl">Medium Price</label>
-                                <input type="text" name="medium" id="medium" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱{{$product->medium}}"> 
+                                <input type="text" name="medium" id="medium" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱-{{$product->medium}}"> 
                                 @error('medium')
                                 <span>errormedium</span>
                                 @enderror
@@ -53,14 +54,14 @@
                             
                             <div class="mb-4 flex flex-col">
                                 <label class="text-2xl">Platter Price</label>
-                                <input type="text" name="platter" id="platter" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱{{$product->platter}}">
+                                <input type="text" name="platter" id="platter" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱-{{$product->platter}}">
                                 @error('platter')
                                 <span>errorplatter</span>
                                 @enderror
                             </div>
                             <div class="mb-6 flex flex-col">
                                 <label class="text-2xl">Tub Price</label>
-                                <input type="text" name="tub" id="tub" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱{{$product->tub}}">
+                                <input type="text" name="tub" id="tub" class="rounded-md h-10 w-4/5 text-xl border border-black mt-2 px-6 m-auto" placeholder="₱-{{$product->tub}}">
                                 @error('tub')
                                 <span>errortub</span>
                                 @enderror
@@ -92,9 +93,7 @@
                 reader.onload = function(e) {
                     // Check if the file is an image
                     filePreview.src = e.target.result;
-                    filePreviewContainer.classList.remove('border-dashed');
-                    
-                    
+                    filePreviewContainer.classList.remove('border-dashed'); 
                 };
     
                 reader.readAsDataURL(file);

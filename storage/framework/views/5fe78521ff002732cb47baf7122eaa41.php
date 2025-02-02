@@ -24,7 +24,7 @@
 
             <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr class="bg-white text-sm">
-                <td class="p-3"><?php echo e($product->name); ?></td>
+                <td class="p-4"><?php echo e($product->name); ?></td>
                 <td>
                     <img class="h-10 w-10 inline" src="<?php echo e(asset('storage/' . $product->image)); ?>" alt="hello">
                 </td>
@@ -32,16 +32,16 @@
                 <td><?php echo e($product->medium); ?></td>
                 <td><?php echo e($product->platter); ?></td>
                 <td><?php echo e($product->tub); ?></td>
-                <td class="flex justify-center text-center items-center">
-                    
-                    <a href="<?php echo e(route('products.edit',$product->id)); ?>"><button class="mr-2 bg-gray-100 text-green-700 h-8 w-20"><i class='fas fa-edit '></i>Edit</button></a>
+                <td>
+                    <div class="flex justify-center text-center items-center m-auto">
+                        <a href="<?php echo e(route('products.edit',$product->id)); ?>"><button class="mr-2 bg-gray-100 text-green-700 h-8 w-20"><i class='fas fa-edit '></i>Edit</button></a>
                     
                     <form action="<?php echo e(route('products.destroy', $product->id)); ?>" Method="POST">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('DELETE'); ?>
                         <button type="submit" class="bg-gray-100 text-red-600 h-8 w-20"><i class='fa fa-trash'></i>Delete</button>
                     </form>
-                    
+                    </div>  
                 </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

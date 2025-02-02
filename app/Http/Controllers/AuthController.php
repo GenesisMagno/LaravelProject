@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
+use App\Http\Controllers\ProductController;
 
 class AuthController extends Controller
 {
@@ -52,13 +55,52 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Redirect to home or wherever you want
-        return redirect()->route('products.index');
+        return to_route('products.index');
     }
 
     public function logout(Request $request){
+        $user = Auth::user();
+        $user->update([
+            'google_token' => null,
+            'google_refresh_token' => null,
+            'token_expires_at' => null,
+        ]); 
+
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login');
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->with(['prompt' => 'select_account'])->redirect(); 
+    }
+
+    public function handleGoogleCallback(){
+            try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+            
+            // Find or create the user
+            $user = User::updateOrCreate(
+                ['email' => $googleUser->getEmail()],
+                [
+                    'name' => $googleUser->getName(),
+                    'google_id' => $googleUser->getId(),
+                    'google_token' => $googleUser->token,
+                    'google_refresh_token' => $googleUser->refreshToken,
+                    'password' => Hash::make(Str::random(24)), // Create a random password (optional)
+                ]
+            );
+
+            // Log the user in
+            Auth::login($user, false);
+            session()->regenerate();
+
+            return redirect()->route('products.index'); // Redirect to the desired page after login
+        } catch (\Exception $e) {
+            \Log::error('Google Login Error: ' . $e->getMessage());
+            return redirect()->route('login')->with('error', 'Google login failed. Please try again.');
+        }
     }
 }
